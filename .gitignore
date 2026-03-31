@@ -1,0 +1,23 @@
+# Secrets
+*.env
+.env
+mcp/
+
+# Logs
+*/logs/
+*.log
+
+# Locks
+*.lock
+.done-*
+
+# Temp files
+*.tmp
+
+# OAuth credentials
+*.json.bak
+*credentials*
+*token*
+
+# Workspace MCP attachments
+.workspace-mcp/
