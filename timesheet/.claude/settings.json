@@ -1,0 +1,63 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Glob",
+      "Grep",
+      "mcp__claude_ai_Gmail__*",
+      "mcp__claude_ai_Google_Calendar__*",
+      "mcp__claude_ai_Fireflies__*"
+    ],
+    "deny": [
+      "Write",
+      "Edit",
+      "Bash(rm:*)",
+      "Bash(mv:*)",
+      "Bash(cp:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(sudo:*)",
+      "Bash(apt:*)",
+      "Bash(pip:*)",
+      "Bash(npm:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git reset:*)",
+      "Bash(git branch:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "denyWrite": [
+        "/home/jp"
+      ],
+      "allowWrite": [
+        "/home/jp/ai_automations/timesheet/logs"
+      ],
+      "denyRead": [
+        "/home/jp/.ssh",
+        "/home/jp/.gnupg",
+        "/home/jp/.aws",
+        "/home/jp/.config/gcloud"
+      ],
+      "allowRead": [
+        "/home/jp/.claude",
+        "/home/jp/Documents/NQB"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "api.fireflies.ai",
+        "gmail.mcp.claude.com",
+        "gcal.mcp.claude.com",
+        "oauth.anthropic.com"
+      ]
+    }
+  }
+}

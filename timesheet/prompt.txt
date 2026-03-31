@@ -1,0 +1,17 @@
+Genere une feuille de temps pour la journee d'hier pour TOUS les projets. Tout en francais. Pas de em dash ni de point-virgule.
+
+1. Determiner la date d'hier et les bornes UTC (8h EDT = 12:00 UTC, minuit EDT = 04:00 UTC du jour suivant).
+
+2. Chercher TOUS les fichiers de sessions Claude dans ~/.claude/projects/ pour les timestamps d'hier (incluant les timestamps UTC de soiree qui correspondent a l'EDT). Extraire les messages utilisateur pour comprendre le travail effectue.
+
+3. Chercher TOUS les repos git sous ~/Documents/NQB/dev/ pour les commits d'hier.
+
+4. Verifier Google Calendar pour les reunions d'hier.
+
+5. Verifier Fireflies pour les transcripts de reunions d'hier.
+
+6. Pour chaque projet, generer un resume avec commits, description du travail (concis, professionnel, ne pas mentionner Claude/AI), et temps actif estime (gaps entre messages <= 15min + 20% reflexion).
+
+7. Formater en feuille de temps avec total et ligne resume.
+
+8. Envoyer le courriel directement (pas un brouillon) a jp.mercier@nqb.ai via Gmail en utilisant gmail_send_message (PAS gmail_create_draft). Sujet: "Feuille de temps - [date d'hier]". Corps: la feuille de temps complete.
