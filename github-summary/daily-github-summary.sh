@@ -1,6 +1,8 @@
 #!/bin/bash
 # Resume GitHub quotidien pour l'org nqbai
-# Cron: 7 9 * * * /home/jp/ai_automations/github-summary/daily-github-summary.sh
+# Cron: 3 8 * * * /home/jp/ai_automations/github-summary/daily-github-summary.sh
+
+export PATH="$HOME/.local/bin:$HOME/.nvm/versions/node/v22.11.0/bin:$PATH"
 
 set -uo pipefail
 
@@ -29,7 +31,10 @@ trap 'rmdir "$RUN_LOCK" 2>/dev/null' EXIT
 source /home/jp/mcp/.env
 export GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET FIREFLIES_API_KEY GOOGLE_CHAT_WEBHOOK_URL
 
-PROMPT="Résumé quotidien des avancements GitHub pour l'organisation nqbai. Tout en français avec les accents. Pas de em dash ni de point-virgule. 1) Déterminer la date d'hier en format ISO. 2) Lister tous les repos nqbai avec gh repo list. 3) Pour chaque repo, vérifier les commits et PRs d'hier avec gh api et gh pr list. 4) Ignorer les repos sans activité. Si aucun repo actif, écrire seulement AUCUNE_ACTIVITE. 5) Pour chaque repo actif, générer un résumé high-level en 2-3 phrases. 6) IMPORTANT: La sortie DOIT être UNIQUEMENT un JSON valide pour Google Chat webhook au format cards, tel que décrit dans le CLAUDE.md de ce répertoire. Aucun texte avant ou après le JSON."
+SKILL=$(cat /home/jp/ai_automations/skills/github-summary.md)
+PROMPT="Exécute ces instructions pour hier. La sortie DOIT être UNIQUEMENT un JSON valide pour Google Chat cards. Aucun texte avant ou après le JSON. Si aucune activité, écris seulement AUCUNE_ACTIVITE.
+
+$SKILL"
 
 log "=== DEBUT resume GitHub pour ${DATE_SHORT} ==="
 log "Lancement de claude -p avec timeout de ${TIMEOUT}s..."
@@ -40,7 +45,7 @@ SUMMARY_FILE="$LOG_DIR/summary-${DATE_SHORT}.txt"
 
 CARD_FORMAT=$(cat /home/jp/ai_automations/github-summary/CLAUDE.md)
 
-timeout "$TIMEOUT" claude -p "$PROMPT" --dangerously-skip-permissions \
+timeout "$TIMEOUT" claude -p "$PROMPT" --dangerously-skip-permissions --effort max \
   --append-system-prompt "$CARD_FORMAT" \
   >> "$SUMMARY_FILE" 2>&1
 EXIT_CODE=$?
@@ -60,8 +65,22 @@ log "Claude termine. Summary file: $(wc -c < "$SUMMARY_FILE") bytes"
 if [ ! -s "$SUMMARY_FILE" ] || grep -q "AUCUNE_ACTIVITE" "$SUMMARY_FILE"; then
   log "Aucune activite detectee, pas de message envoye."
 else
-  # Nettoyer les backticks markdown et envoyer dans Google Chat via webhook
-  PAYLOAD=$(sed 's/^```json//;s/^```//' "$SUMMARY_FILE")
+  # Extraire le JSON du summary (ignorer texte et backticks autour)
+  PAYLOAD=$(python3 -c "
+import re, sys
+text = open('$SUMMARY_FILE').read()
+match = re.search(r'\{.*\}', text, re.DOTALL)
+if match:
+    print(match.group())
+else:
+    sys.exit(1)
+" 2>/dev/null)
+  if [ -z "$PAYLOAD" ]; then
+    log "Erreur: impossible d'extraire le JSON du summary"
+    touch "$LOCK_FILE"
+    log "=== FIN ==="
+    exit 1
+  fi
   HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' \
     -X POST "$GOOGLE_CHAT_WEBHOOK_URL" \
     -H 'Content-Type: application/json' \
