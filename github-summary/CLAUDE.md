@@ -6,6 +6,8 @@ Ce dossier contient l'automatisation du resume GitHub quotidien pour l'org nqbai
 
 La sortie DOIT etre un JSON valide pour Google Chat webhook (cards format). Rien d'autre que le JSON.
 
+IMPORTANT: Tout le texte rédigé dans les cards doit être en français avec les accents (é, è, ê, à, ç, etc.). Les messages de commits restent tels quels en anglais.
+
 ### Structure Google Chat Card
 
 ```json
