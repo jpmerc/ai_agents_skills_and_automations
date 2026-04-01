@@ -17,17 +17,17 @@ $ARGUMENTS - Intervalle de temps (ex: "hier", "2026-01-15", "cette semaine", "15
 2. **Chercher TOUS les projets avec activité dans la période**
 
    ### 2a. Sessions Claude (toutes les sessions, tous les projets)
-   Chercher dans `~/.claude/projects/` TOUS les dossiers de projets :
-   ```python
-   # Pour chaque fichier .jsonl (exclure subagents/), chercher les timestamps dans la période
-   # Extraire les messages type "user" pour comprendre le travail effectué
-   # Calculer le temps actif : somme des gaps entre messages consécutifs <= 15min
-   ```
+   Chercher dans `~/.claude/projects/` TOUS les dossiers de projets.
+   Chercher les fichiers .jsonl (exclure subagents/) avec des timestamps dans la période.
+   Extraire les messages type "user" pour comprendre le travail effectué.
+   Calculer le temps actif : somme des gaps entre messages consécutifs <= 15min.
    - IMPORTANT : les timestamps dans les .jsonl sont en UTC. Convertir en EDT pour l'affichage.
    - IMPORTANT : vérifier aussi les timestamps UTC du jour SUIVANT avant 04:00 (= soirée EDT du jour cible)
+   - IMPORTANT : chercher dans TOUS les dossiers de projets, incluant ceux liés à ~/Documents/NQB/dev/ ET ~/ai_automations/
+   - Ne pas ignorer les périodes où des réunions ont lieu, l'utilisateur peut travailler en parallèle
 
    ### 2b. Commits git (tous les repos)
-   Chercher dans TOUS les repos git sous `~/Documents/NQB/dev/` :
+   Chercher dans TOUS les repos git sous `~/Documents/NQB/dev/` ET `~/ai_automations/` :
    ```bash
    find ~/Documents/NQB/dev -maxdepth 6 -name ".git" -type d | while read gitdir; do
      repo=$(dirname "$gitdir")
