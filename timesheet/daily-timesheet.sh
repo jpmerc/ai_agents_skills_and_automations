@@ -42,7 +42,7 @@ log "Lancement de claude -p avec timeout de ${TIMEOUT}s..."
 
 cd /home/jp/ai_automations/timesheet
 
-if timeout "$TIMEOUT" claude -p "$PROMPT" --dangerously-skip-permissions --effort max \
+if timeout "$TIMEOUT" claude -p "$PROMPT" --dangerously-skip-permissions \
   --mcp-config /home/jp/mcp/mcp-config.json \
   >> "$LOG_FILE" 2>&1; then
   touch "$LOCK_FILE"
