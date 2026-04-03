@@ -25,16 +25,35 @@ $ARGUMENTS - Intervalle de temps (ex: "hier", "2026-01-15", "cette semaine", "15
    - Extraire les messages utilisateur des fichiers `.jsonl` pour comprendre le travail effectué
    - Noter les timestamps created/modified de chaque session
 
-4. **Estimer le temps réel**
+4. **Consulter ActivityWatch (temps ecran par app/site)**
+   - DB: `~/.local/share/activitywatch/aw-server/peewee-sqlite.v2.db`
+   - Tables: `bucketmodel` (buckets) et `eventmodel` (events)
+   - bucket_id=1 : aw-watcher-window (app et titre de fenetre active)
+   - bucket_id=2 : aw-watcher-afk (status actif/inactif)
+   - Chaque event a: timestamp (UTC), duration (secondes), datastr (JSON avec "app" et "title")
+   - Requete pour une journee :
+     ```sql
+     SELECT timestamp, duration, datastr FROM eventmodel
+     WHERE bucket_id = 1
+     AND timestamp >= '<date_debut_utc>' AND timestamp < '<date_fin_utc>'
+     ORDER BY timestamp
+     ```
+   - Grouper par app/titre pour identifier le temps passe sur chaque site/outil
+   - Particulierement utile pour le temps passe sur des onglets web (Heyreach, Gojiberry, LinkedIn, etc.) qui ne sont pas captures par les sessions Claude ou les commits git
+   - Croiser avec bucket_id=2 (afk) pour exclure le temps inactif
+
+5. **Estimer le temps réel**
    Pour chaque session:
    - Temps session = modified - created
    - Si "continuation" mentionnée, ajouter ~30-60 min pour la session précédente
    - Ajouter ~20% pour réflexion/tests entre les interactions
+   - Croiser avec les donnees ActivityWatch pour valider/completer les estimations
 
    Facteurs à considérer:
    - Nombre de messages (plus = plus de temps)
    - Complexité des tâches (création vs correction)
    - Gaps entre sessions (temps de test/réflexion)
+   - Temps ActivityWatch sur des apps/sites non captures par Claude ou git
 
 5. **Générer le résumé**
 

@@ -42,10 +42,29 @@ $ARGUMENTS - Intervalle de temps (ex: "hier", "2026-01-15", "cette semaine", "15
    ### 2d. Transcripts de réunions (Fireflies)
    Utiliser `mcp__claude_ai_Fireflies__fireflies_search` avec `from:<date> to:<date+1> mine:true` pour trouver les réunions enregistrées et leurs résumés.
 
+   ### 2e. ActivityWatch (temps ecran par app/site)
+   DB: `~/.local/share/activitywatch/aw-server/peewee-sqlite.v2.db`
+   Tables: `bucketmodel` (buckets) et `eventmodel` (events)
+   - bucket_id=1 : aw-watcher-window (app active et titre de fenetre)
+   - bucket_id=2 : aw-watcher-afk (status actif/inactif)
+   - Chaque event : timestamp (UTC), duration (secondes), datastr (JSON avec "app" et "title")
+   - Requete pour une journee :
+     ```sql
+     SELECT timestamp, duration, datastr FROM eventmodel
+     WHERE bucket_id = 1
+     AND timestamp >= '<date_debut_utc>' AND timestamp < '<date_fin_utc>'
+     ORDER BY timestamp
+     ```
+   - IMPORTANT : les timestamps AW sont en UTC mais la journee de travail est en EST/EDT. Filtrer STRICTEMENT avec les bornes UTC converties (ex: 2 avril 8h EDT = 2 avril 12:00 UTC, 2 avril minuit EDT = 3 avril 04:00 UTC). Ne jamais inclure des events hors de ces bornes. Si aucun event ne tombe dans la periode, ne pas utiliser AW pour cette timesheet.
+   - Grouper par app/titre pour identifier le temps passe sur chaque site/outil
+   - Particulierement utile pour le temps sur des onglets web (Heyreach, Gojiberry, LinkedIn, etc.) non captures par sessions Claude ou commits git
+   - Croiser avec bucket_id=2 (afk) pour exclure le temps inactif
+
 3. **Estimer le temps réel par projet**
    - Temps actif = somme des gaps entre messages consécutifs <= 15 min
    - Ajouter ~20% pour réflexion/tests entre les interactions
    - Pour les réunions : utiliser la durée Fireflies ou la durée Calendar
+   - Utiliser ActivityWatch pour valider/completer les estimations et capturer le travail web non trace ailleurs
    - Afficher aussi l'activité par heure si utile pour la validation
 
 4. **Générer le résumé**
