@@ -94,9 +94,16 @@ $ARGUMENTS - Intervalle de temps (ex: "hier", "2026-01-15", "cette semaine", "15
    ```
 
 5. **Envoyer par courriel (si demandé ou si --email)**
-   Utiliser `mcp__claude_ai_Gmail__gmail_create_draft` ou envoyer directement à jp.mercier@nqb.ai avec :
+   Utiliser `mcp__workspace-mcp__send_gmail_message` pour envoyer à jp.mercier@nqb.ai avec :
    - Sujet : "Feuille de temps - [date(s)]"
-   - Corps : la feuille de temps complète
+   - `body_format: "html"` (OBLIGATOIRE, Gmail ne rend pas le markdown)
+   - `body` : convertir la feuille de temps en HTML simple et lisible dans Gmail :
+     - `##` devient `<h2>`, `###` devient `<h3>`
+     - `**texte**` devient `<strong>texte</strong>`
+     - Listes `-` deviennent `<ul><li>...</li></ul>`
+     - Paragraphes entourés de `<p>...</p>`
+     - Séparer les sections avec des sauts de ligne HTML, pas des `---`
+     - Garder le HTML minimal, pas de CSS inline complexe, Gmail s'occupe du rendu
 
 ## Notes
 
