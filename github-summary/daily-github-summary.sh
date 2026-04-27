@@ -1,12 +1,12 @@
 #!/bin/bash
 # Resume GitHub quotidien pour l'org nqbai
-# Cron: 3 8 * * * /home/jp/ai_automations/github-summary/daily-github-summary.sh
+# Cron: 15 21 * * * /home/jp/ai_automations/github-summary/daily-github-summary.sh
 
 export PATH="$HOME/.local/bin:$HOME/.nvm/versions/node/v22.11.0/bin:$PATH"
 
 set -uo pipefail
 
-DATE_SHORT=$(date -d "yesterday" +"%Y-%m-%d")
+DATE_SHORT=$(date +"%Y-%m-%d")
 LOG_DIR="/home/jp/ai_automations/github-summary/logs"
 LOG_FILE="$LOG_DIR/github-summary-${DATE_SHORT}.log"
 TIMEOUT=600
@@ -18,7 +18,7 @@ log() {
 }
 
 if [ -f "$LOCK_FILE" ]; then
-  log "Resume GitHub pour ${DATE_SHORT} deja envoye, on skip."
+  log "Resume GitHub deja envoye pour la run du ${DATE_SHORT}, on skip."
   exit 0
 fi
 
@@ -29,14 +29,14 @@ fi
 trap 'rmdir "$RUN_LOCK" 2>/dev/null' EXIT
 
 source /home/jp/mcp/.env
-export GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET FIREFLIES_API_KEY GOOGLE_CHAT_WEBHOOK_URL
+export GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET FIREFLIES_API_KEY GOOGLE_CHAT_WEBHOOK_URL GH_TOKEN
 
 SKILL=$(cat /home/jp/ai_automations/skills/github-summary.md)
-PROMPT="Exécute ces instructions pour hier. La sortie DOIT être UNIQUEMENT un JSON valide pour Google Chat cards. Aucun texte avant ou après le JSON. Si aucune activité, écris seulement AUCUNE_ACTIVITE.
+PROMPT="Exécute ces instructions pour les dernières 24 heures (fenêtre glissante: maintenant - 24h jusqu'à maintenant, en UTC). La sortie DOIT être UNIQUEMENT un JSON valide pour Google Chat cards. Aucun texte avant ou après le JSON. Si aucune activité, écris seulement AUCUNE_ACTIVITE.
 
 $SKILL"
 
-log "=== DEBUT resume GitHub pour ${DATE_SHORT} ==="
+log "=== DEBUT resume GitHub (24h glissantes) - run ${DATE_SHORT} ==="
 log "Lancement de claude -p avec timeout de ${TIMEOUT}s..."
 
 cd /home/jp/ai_automations/github-summary
