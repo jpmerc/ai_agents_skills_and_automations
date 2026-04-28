@@ -99,12 +99,12 @@ $ARGUMENTS - Intervalle de temps (ex: "dernieres 24h", "hier", "2026-01-15", "ce
      - **Type** entre crochets : `[feat]`, `[fix]`, `[refactor]`, `[chore]`, `[docs]`, `[test]`.
      - **Auteur** principal entre parentheses a la fin.
    - Format :
-     - Avec pourquoi inferable : `[type] **Quoi (description riche).** Pourquoi (auteur)`
-     - Sans pourquoi : `[type] **Quoi (description riche)** (auteur)`
+     - Avec pourquoi inferable : `[type] Quoi (description riche). Pourquoi (auteur)` (texte normal, NE PAS mettre la description en gras)
+     - Sans pourquoi : `[type] Quoi (description riche) (auteur)` (texte normal)
      - Exemples enrichis :
-       - `[feat] **Lancement self-serve : 6 nouveaux endpoints API publics pour pricing/checkout, integration Stripe pour la facturation a l'usage, page d'inscription publique avec verification email.** Ouverture du produit au self-serve sans intervention commerciale (Marie)`
-       - `[fix] **Correction du calcul de TPS sur remboursements partiels : la taxe etait calculee sur le montant initial au lieu du montant rembourse.** Bug remonte par la comptabilite (Alex)`
-       - `[refactor] **Decoupage du module auth en 3 sous-services (sessions, tokens, MFA), avec migration des appelants** (Tom)`
+       - `[feat] Lancement self-serve : 6 nouveaux endpoints API publics pour pricing/checkout, integration Stripe pour la facturation a l'usage, page d'inscription publique avec verification email. Ouverture du produit au self-serve sans intervention commerciale (Marie)`
+       - `[fix] Correction du calcul de TPS sur remboursements partiels : la taxe etait calculee sur le montant initial au lieu du montant rembourse. Bug remonte par la comptabilite (Alex)`
+       - `[refactor] Decoupage du module auth en 3 sous-services (sessions, tokens, MFA), avec migration des appelants (Tom)`
    - Si un changement semble risque ou inhabituel (suppression massive de code, modif facturation/auth/donnees sensibles, refactor majeur sans contexte, secrets en clair, dependance suspecte ajoutee), prefixer la ligne avec `⚠`.
    - Limiter a 6 entrees principales par repo. Si plus, regrouper les mineurs : `[chore] Divers (N commits): tests, docs, dependances`.
 
@@ -121,8 +121,8 @@ $ARGUMENTS - Intervalle de temps (ex: "dernieres 24h", "hier", "2026-01-15", "ce
    **Resume:** [2-3 phrases sur l'avancement du projet]
 
    **Changements effectues:**
-   - [type] **Quoi.** Pourquoi (auteur)
-   - [type] **Quoi** (auteur)
+   - [type] Quoi. Pourquoi (auteur)
+   - [type] Quoi (auteur)
    - ...
 
    **Commits ([nombre]):**

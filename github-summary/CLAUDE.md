@@ -24,7 +24,7 @@ IMPORTANT: Tout le texte rédigé dans les cards doit être en français avec le
           "widgets": [
             {
               "textParagraph": {
-                "text": "<b>Résumé :</b> 2-3 phrases sur l'avancement.<br><br><b>Changements effectués :</b><ul><li>[feat] <b>Ajout export CSV des factures.</b> Demande récurrente côté support (Marie)</li><li>[fix] <b>Correction calcul TPS sur remboursements</b> (Alex)</li><li>⚠ [refactor] <b>Réorganisation du module auth</b> (Tom)</li></ul><b>Commits (5) :</b><ul><li>auteur: message du commit</li></ul><b>PRs mergées :</b><ul><li>titre de la PR par auteur</li></ul>"
+                "text": "<b>Résumé :</b> 2-3 phrases sur l'avancement.<br><br><b>Changements effectués :</b><ul><li>[feat] Ajout export CSV des factures. Demande récurrente côté support (Marie)</li><li>[fix] Correction calcul TPS sur remboursements (Alex)</li><li>⚠ [refactor] Réorganisation du module auth (Tom)</li></ul><b>Commits (5) :</b><ul><li>auteur: message du commit</li></ul><b>PRs mergées :</b><ul><li>titre de la PR par auteur</li></ul>"
               }
             }
           ]
@@ -49,9 +49,9 @@ IMPORTANT: Tout le texte rédigé dans les cards doit être en français avec le
 
 C'est la section clé pour les dirigeants (jp + associé). Objectif : comprendre haut niveau ce qui a été fait et pourquoi sans avoir à parler aux développeurs, et détecter une dérive de direction.
 
-- Sources autorisées **uniquement** : titres de PR, premières lignes de commits, noms de branches. Pas de bodies, pas de diffs (trop hardcore).
-- Format avec pourquoi inférable : `[type] <b>Quoi.</b> Pourquoi (auteur)`
-- Format sans pourquoi : `[type] <b>Quoi</b> (auteur)` (ne pas inventer une raison ni écrire "raison non documentée" partout)
+- Sources : titres de PR, premières lignes de commits, noms de branches, et le **diff** des PRs (avec garde-fous de taille, voir skill). Pas de bodies textuels de PR/commits.
+- Format avec pourquoi inférable : `[type] Quoi. Pourquoi (auteur)` (texte normal, pas de gras sur la description)
+- Format sans pourquoi : `[type] Quoi (auteur)` (ne pas inventer une raison ni écrire "raison non documentée" partout)
 - Types : `feat`, `fix`, `refactor`, `chore`, `docs`, `test`
 - Préfixer avec `⚠` les changements risqués ou inhabituels (suppression massive, modif facturation/auth/données, refactor majeur sans contexte évident)
 - Regrouper par changement logique, pas par commit. Max 6 entrées par repo, le reste en `[chore] Divers (N commits)`.
