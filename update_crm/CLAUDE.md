@@ -100,9 +100,15 @@ Règle : pour les nouvelles compagnies / contacts non triviaux, le skill propose
 - `claude_ai_Fireflies` : transcripts de meetings
   - `fireflies_get_transcripts`, `fireflies_get_transcript`
 
-## Slash command
+## Slash commands
 
-Le skill `/update-crm` est défini dans `/home/jp/ai_automations/skills/update-crm.md` (chargé automatiquement par Claude Code).
+- `/update-crm` (`/home/jp/ai_automations/skills/update-crm.md`) : update depuis Gmail / Calendar / Fireflies sur une fenêtre de jours.
+- `/update-crm-linkedin` (`/home/jp/ai_automations/skills/update-crm-linkedin.md`) : enrichit les contacts existants avec leur URL LinkedIn (depuis `Connections.csv`) et détecte les nouveaux interlocuteurs LinkedIn (depuis `messages.csv`, conversations bidirectionnelles seulement). Backup local : `/home/jp/Documents/NQB/LinkedIn/backups/`. Complémentaire à `/update-crm`.
+
+## Outils utilitaires
+
+- `extract_linkedin_conversations.py` : reconstruit les conversations LinkedIn depuis `messages.csv` en un fichier `prenom_nom.md` par interlocuteur. Sortie par défaut dans `/home/jp/Documents/NQB/LinkedIn/conversations/`. Filtre les conversations à 1 seul message et les groupes. Utile pour relire le contexte avant de classifier un contact.
+  - Usage : `python3 extract_linkedin_conversations.py [BACKUP_DIR] [OUTPUT_DIR]`
 
 ## Hors scope v1
 
