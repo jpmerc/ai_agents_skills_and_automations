@@ -18,6 +18,9 @@ log() {
 SKILL=$(cat /home/jp/ai_automations/skills/timesheet-all-projects.md)
 PROMPT="Exécute ces instructions pour hier. Envoyer le courriel directement (pas un brouillon) à jp.mercier@nqb.ai via gmail_send_message (PAS gmail_create_draft). Sujet: Feuille de temps - ${DATE_SHORT}
 
+IMPORTANT confirmation d'envoi: une fois le courriel RÉELLEMENT envoyé avec succès (outil d'envoi retourné sans erreur), imprime en toute dernière ligne, seule sur sa ligne, le marqueur exact: EMAIL_SENT_OK
+Si l'envoi échoue ou est impossible (outil non connecté, etc.), n'imprime PAS ce marqueur et explique le problème.
+
 $SKILL"
 
 LOCK_FILE="$LOG_DIR/.done-${DATE_SHORT}"
@@ -42,18 +45,25 @@ log "Lancement de claude -p avec timeout de ${TIMEOUT}s..."
 
 cd /home/jp/ai_automations/timesheet
 
-if timeout "$TIMEOUT" claude -p "$PROMPT" --dangerously-skip-permissions \
+set +e
+timeout "$TIMEOUT" claude -p "$PROMPT" --dangerously-skip-permissions \
   --mcp-config /home/jp/mcp/mcp-config.json \
-  >> "$LOG_FILE" 2>&1; then
+  >> "$LOG_FILE" 2>&1
+EXIT_CODE=$?
+set -e
+
+# Le succes n'est reel que si le courriel a ete envoye. On ne cree le marqueur .done
+# QUE si Claude a confirme l'envoi (marqueur EMAIL_SENT_OK), sinon le job reessaiera
+# au prochain passage au lieu de croire a tort que c'est fait.
+if [ "$EXIT_CODE" -eq 124 ]; then
+  log "=== TIMEOUT après ${TIMEOUT}s (courriel non envoyé) ==="
+elif [ "$EXIT_CODE" -ne 0 ]; then
+  log "=== ERREUR (exit code: $EXIT_CODE, courriel non envoyé) ==="
+elif grep -q "EMAIL_SENT_OK" "$LOG_FILE"; then
   touch "$LOCK_FILE"
-  log "=== SUCCÈS ==="
+  log "=== SUCCÈS (courriel envoyé) ==="
 else
-  EXIT_CODE=$?
-  if [ "$EXIT_CODE" -eq 124 ]; then
-    log "=== TIMEOUT après ${TIMEOUT}s ==="
-  else
-    log "=== ERREUR (exit code: $EXIT_CODE) ==="
-  fi
+  log "=== ERREUR ENVOI: claude a terminé sans confirmer l'envoi (workspace-mcp déconnecté?). Pas de .done, réessai au prochain passage. ==="
 fi
 
 log "=== FIN ==="
