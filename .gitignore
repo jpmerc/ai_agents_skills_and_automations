@@ -21,3 +21,7 @@ mcp/.env
 
 # Workspace MCP attachments
 .workspace-mcp/
+
+# Runtime state
+*.bak
+github-summary/.last_card.json
