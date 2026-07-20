@@ -9,7 +9,11 @@ $ARGUMENTS - Options (ex: "last 7 days", "depuis lundi"). Par défaut: tous les 
 ## Instructions
 
 ### 1. Chercher les courriels
-Utiliser `search_gmail_messages` avec **toujours** `is:unread` ET `-category:promotions -category:social`. Si $ARGUMENTS precise une periode (ex: "30 derniers jours", "derniere semaine"), ajouter aussi un filtre temporel (ex: `newer_than:30d`). La requete combine toujours les deux : `is:unread newer_than:30d -category:promotions -category:social`. Recuperer un bon volume (page_size 30+).
+Utiliser `search_gmail_messages`. Le filtre recommande est **`category:purchases`** : c'est la categorie Gmail qui regroupe les recus et factures, elle cible directement les bons courriels (Stripe, Anthropic, Supabase, etc.) sans le bruit des newsletters. La requete par defaut : `is:unread newer_than:30d category:purchases`.
+
+Toujours inclure `is:unread`. Si $ARGUMENTS precise une periode (ex: "30 derniers jours", "derniere semaine"), ajouter le filtre temporel (ex: `newer_than:30d`).
+
+Filtre de secours (si `category:purchases` semble rater des factures) : `is:unread newer_than:30d -category:promotions -category:social` puis filtrer manuellement par sujet/expediteur. Ce filtre large ratisse tout l'inbox, a n'utiliser que si necessaire. Recuperer un bon volume (page_size 30+).
 
 ### 2. Lire et filtrer
 Utiliser `get_gmail_messages_content_batch` pour lire tous les courriels trouves. **Attention** : le resultat peut etre tres volumineux. Si le fichier est trop gros pour etre lu directement, extraire les metadonnees (subject, from, montants) avec un script Python.
